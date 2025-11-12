@@ -36,7 +36,7 @@ window.addEventListener('scroll', animateSkillBars);
 // Form submission
 // Initialize EmailJS
 (function() {
-    emailjs.init("ssMLaHg29lwZPb8BR"); // Ganti dengan Public Key Anda
+    emailjs.init("-3gxayc7l3kmDMR6m"); // Ganti dengan Public Key Anda
 })();
 
 // Form submission dengan EmailJS
