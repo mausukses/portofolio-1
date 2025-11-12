@@ -34,22 +34,106 @@ const animateSkillBars = () => {
 window.addEventListener('scroll', animateSkillBars);
 
 // Form submission
-const contactForm = document.getElementById('contact-form');
+// Form submission
+// Initialize EmailJS
+(function() {
+    emailjs.init("ssMLaHg29lwZPb8BR"); // Ganti dengan Public Key Anda
+})();
 
-contactForm.addEventListener('submit', (e) => {
+// Form submission dengan EmailJS
+const contactForm = document.getElementById('contact-form');
+const submitBtn = document.getElementById('submit-btn');
+const btnText = document.getElementById('btn-text');
+const btnLoading = document.getElementById('btn-loading');
+const formMessage = document.getElementById('form-message');
+
+const showMessage = (message, type) => {
+    formMessage.textContent = message;
+    formMessage.className = `form-message ${type}`;
+    formMessage.style.display = 'block';
+    
+    setTimeout(() => {
+        formMessage.style.display = 'none';
+    }, 5000);
+};
+
+const setLoading = (isLoading) => {
+    if (isLoading) {
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'flex';
+        submitBtn.disabled = true;
+    } else {
+        btnText.style.display = 'block';
+        btnLoading.style.display = 'none';
+        submitBtn.disabled = false;
+    }
+};
+
+contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Get form values
-    const name = contactForm.querySelector('input[type="text"]').value;
-    const email = contactForm.querySelector('input[type="email"]').value;
-    const message = contactForm.querySelector('textarea').value;
+    const formData = new FormData(contactForm);
+    const data = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        subject: formData.get('subject'),
+        message: formData.get('message'),
+        to_email: 'benayayoyada34@gmail.com' // Ganti dengan email Anda
+    };
     
-    // In a real application, you would send this data to a server
-    // For this example, we'll just show an alert
-    alert(`Terima kasih ${name}! Pesan Anda telah berhasil dikirim. Saya akan membalas ke ${email} segera.`);
+    // Validation
+    if (!data.name || !data.email || !data.subject || !data.message) {
+        showMessage('Harap lengkapi semua field!', 'error');
+        return;
+    }
     
-    // Reset form
-    contactForm.reset();
+    if (!isValidEmail(data.email)) {
+        showMessage('Format email tidak valid!', 'error');
+        return;
+    }
+    
+    setLoading(true);
+    
+    try {
+        // Send email using EmailJS
+        const response = await emailjs.send(
+            'service_2j1ldg5', // Ganti dengan Service ID Anda
+            'template_ljeirmd', // Ganti dengan Template ID Anda
+            data
+        );
+        
+        if (response.status === 200) {
+            showMessage('Pesan berhasil dikirim! Saya akan membalas segera.', 'success');
+            contactForm.reset();
+        }
+    } catch (error) {
+        console.error('Error sending email:', error);
+        showMessage('Maaf, terjadi kesalahan. Silakan coba lagi atau hubungi via email langsung.', 'error');
+    } finally {
+        setLoading(false);
+    }
+});
+
+// Email validation function
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Tambahkan juga link email yang bisa diklik
+document.addEventListener('DOMContentLoaded', function() {
+    const emailElement = document.querySelector('.contact-item:nth-child(1) p');
+    if (emailElement) {
+        const email = emailElement.textContent;
+        emailElement.innerHTML = `<a href="mailto:${email}">${email}</a>`;
+    }
+    
+    const phoneElement = document.querySelector('.contact-item:nth-child(2) p');
+    if (phoneElement) {
+        const phone = phoneElement.textContent;
+        phoneElement.innerHTML = `<a href="tel:${phone}">${phone}</a>`;
+    }
 });
 
 // Smooth scrolling for anchor links
