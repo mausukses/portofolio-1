@@ -34,7 +34,6 @@ const animateSkillBars = () => {
 window.addEventListener('scroll', animateSkillBars);
 
 // Form submission
-// Form submission
 // Initialize EmailJS
 (function() {
     emailjs.init("ssMLaHg29lwZPb8BR"); // Ganti dengan Public Key Anda
@@ -134,24 +133,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const phone = phoneElement.textContent;
         phoneElement.innerHTML = `<a href="tel:${phone}">${phone}</a>`;
     }
-});
-
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 70,
-                behavior: 'smooth'
-            });
-        }
-    });
 });
 
 // Navbar background on scroll
